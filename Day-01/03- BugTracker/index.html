@@ -37,14 +37,32 @@
         10. Persist the bugs in the server
     */
     </script>
+    <script src="angular.js"></script>
+    <script>
+        var bugTrackerApp = angular.module("bugTrackerApp", []);
+        bugTrackerApp.controller("bugsController", function($scope){
+            $scope.bugs = [
+                "Stack overflow error",
+                "Object reference is not set to an instance of an object",
+                "Undefined is not a function",
+                "Divide by 0 error"
+            ];
+
+            $scope.newBugName = '';
+            $scope.addBug = function(){
+                $scope.bugs.push($scope.newBugName);
+            }
+        })
+
+    </script>
 </head>
-<body>
+<body ng-app="bugTrackerApp">
     <h1>Bug Tracker</h1>
-        <div class="content">
+        <div class="content" ng-controller="bugsController">
             <div class="stats">
                 <span class="closed">3</span>
                 /
-                <span>5</span>
+                <span ng-bind="bugs.length"></span>
             </div>
             <div class="search">
                 <label for="">Search :</label>
@@ -56,13 +74,11 @@
             </div>
             <div class="list">
                 <label for="">Bug :</label>
-                <input type="text" name="" id="">
-                <input type="button" value="Add Bug">
+                <input type="text" ng-model="newBugName">
+                <input type="button" value="Add Bug" ng-click="addBug()">
                 <input type="button" value="Remove Closed">
                 <ol>
-                    <li>Bug - 1</li>
-                    <li class="closed">Bug - 2</li>
-                    <li>Bug - 3</li>
+                    <li ng-repeat="bug in bugs" ng-bind="bug"></li>
                 </ol>
             </div>
         </div>
