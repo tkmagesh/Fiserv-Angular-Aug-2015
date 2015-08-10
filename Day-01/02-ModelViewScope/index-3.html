@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Salary Calculator</title>
+    <style>
+        .field{
+            margin-bottom: 10px;
+        }
+        label{
+            display: block;
+        }
+        #divResult{
+            font-size: 18pt;
+            color : red;
+            font-weight: bold;
+        }
+        body{
+            background-color: black;
+            color: yellow;
+        }
+    </style>
+    <script src="jquery-1.11.2.js"></script>
+    <script src="angular.js"></script>
+
+    <script>
+        function SalaryCalculator(){
+            this.basic = 0;
+            this.hra = 0;
+            this.da = 0;
+            this.tax = 0;
+            this.salary = 0;
+        }
+        SalaryCalculator.prototype.calculate = function(){
+            var gross = parseInt(this.basic,10) + parseInt(this.hra,10) + parseInt(this.da,10);
+            this.salary = gross * ((100-parseInt(this.tax,10))/100);
+        }
+
+
+        $(document).ready(function(){
+            angular.bootstrap(document.body, []);
+            window.scope = angular.element(document.body).scope();
+            scope.calculator = new SalaryCalculator();
+
+            //Reacting to User Actions
+
+        });
+    </script>
+</head>
+<body>
+    <h1>Salary Calculator</h1>
+        <div class="content">
+            <div class="field">
+                <label for="">Basic :</label>
+                <input type="text"  ng-model="calculator.basic">
+            </div>
+            <div class="field">
+                <label for="">HRA :</label>
+                <input type="text"  ng-model="calculator.hra">
+            </div>
+            <div class="field">
+                <label for="">DA :</label>
+                <input type="text"  ng-model="calculator.da">
+            </div>
+            <div class="field">
+                <label for="">Tax :</label>
+                <input type="range"  min="0" max="30" value="0" ng-model="calculator.tax">
+                <span  ng-bind="calculator.tax">[Tax %]</span>
+            </div>
+            <div class="field">
+                <input type="button" value="Calculate"  ng-click="calculator.calculate()">
+            </div>
+            <div class="field">
+                <div  ng-bind="calculator.salary">[Salary]</div>
+            </div>
+        </div>
+
+</body>
+</html>
