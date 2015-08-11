@@ -14,8 +14,22 @@
             font-style: italic;
             font-weight: bold;
         }
+        ol{
+            list-style: none;
+            width: 80%;
+        }
         li{
             cursor: pointer;
+            border : 2px solid gray;
+            background-color: lightgray;
+            color: black;
+            margin: 10px;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        li .bugname{
+            font-size: 19pt;
         }
         div{
             margin-bottom: 10px;
@@ -32,7 +46,7 @@
         5. Display statistics - done
         6. Search for the bugs - done
         7. Sort the bugs - done
-        8. Improvise how the bugs are displayed
+        8. Improvise how the bugs are displayed - done
         9. Display "createdAt"
         10. Persist the bugs in the server
     */
@@ -54,6 +68,7 @@
             function Bug(defaults){
                 this.name = defaults.name || '';
                 this.isClosed = defaults.isClosed || false;
+                this.createdAt = defaults.createdAt || new Date();
             }
             Bug.prototype.toggle = function(){
                 this.isClosed = !this.isClosed;
@@ -64,10 +79,26 @@
         bugTrackerApp.controller("bugsController", function($scope, Bug){
             console.log("controller arguments - ", arguments.length);
             $scope.bugs = [
-                new Bug({name : "Stack overflow error", isClosed : false}),
-                 new Bug({name : "Object reference is not set to an instance of an object", isClosed : false}),
-                 new Bug({name : "Undefined is not a function", isClosed : false}),
-                 new Bug({name : "Divide by 0 error", isClosed : false})
+                new Bug({
+                    name : "Stack overflow error",
+                    isClosed : false,
+                    createdAt : new Date(2015,7,2)
+                }),
+                new Bug({
+                     name : "Object reference is not set to an instance of an object",
+                     isClosed : false,
+                     createdAt : new Date(2015,7,5)
+                }),
+                new Bug({
+                     name : "Undefined is not a function",
+                     isClosed : false,
+                    createdAt : new Date(2015,7,7)
+                }),
+                new Bug({
+                     name : "Divide by 0 error",
+                     isClosed : false,
+                    createdAt : new Date(2015,7,10)
+                })
             ];
 
             $scope.newBugName = '';
@@ -92,11 +123,23 @@
                 }
             };
 
-            $scope.getClosedCount = function(){
-                return $scope.bugs.filter(function(bug){
-                    return bug.isClosed;
+
+        });
+
+        /*bugTrackerApp.filter("closedCount", function(){
+            return function(bugs){
+                return bugs.filter(function(bug){
+                    return bug.isClosed
                 }).length;
-            };
+            }
+        });*/
+
+        bugTrackerApp.filter("closedCount", function($filter){
+            var builtinFilter = $filter('filter');
+            return function(bugs){
+                return builtinFilter(bugs, {isClosed : true}).length;
+            }
+
         });
 
         bugTrackerApp.value("defaultTrimLength", 20);
@@ -117,7 +160,7 @@
     <h1>Bug Tracker</h1>
         <div class="content" ng-controller="bugsController">
             <div class="stats">
-                <span class="closed">{{getClosedCount()}}</span>
+                <span class="closed">{{ (bugs | filter:{isClosed:true}).length }}</span>
                 /
                 <span>{{bugs.length}}</span>
             </div>
@@ -143,14 +186,21 @@
                 <input type="button" value="Add Bug" ng-click="addBug()">
                 <input type="button" value="Remove Closed" ng-click="removeClosed()">
                 <br>
+                <style>
 
+
+                </style>
                 <ol>
                     <li
                        ng-repeat="bug in bugs | filter:searchBug | orderBy:sortBug.by:sortBug.descending"
-                       ng-click="toggle(bug)"
-                       ng-class="{closed : bug.isClosed}"
                     >
-                        {{bug.name | trimText:30}}
+                       <div class="bugname" ng-click="toggle(bug)"
+                       ng-class="{closed : bug.isClosed}">
+                           {{bug.name | trimText:30}}
+                       </div>
+                       <div class="timestamp">
+                           {{bug.createdAt}}
+                       </div>
                     </li>
                 </ol>
             </div>
