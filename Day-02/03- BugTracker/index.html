@@ -99,9 +99,13 @@
             };
         });
 
-        bugTrackerApp.filter("trimText", function(){ /* factory that returns the actual filter*/
-            return function(data){
-                return data.length < 30 ? data : data.substr(0,30) + "...";
+        bugTrackerApp.value("defaultTrimLength", 20);
+
+        bugTrackerApp.filter("trimText", function(defaultTrimLength){
+            /* factory that returns the actual filter*/
+            return function(data, trimLength){
+                trimLength = trimLength || defaultTrimLength;
+                return data.length < trimLength ? data : data.substr(0,trimLength) + "...";
 
             };
 
@@ -138,13 +142,15 @@
                 <input type="text" ng-model="newBugName">
                 <input type="button" value="Add Bug" ng-click="addBug()">
                 <input type="button" value="Remove Closed" ng-click="removeClosed()">
+                <br>
+
                 <ol>
                     <li
                        ng-repeat="bug in bugs | filter:searchBug | orderBy:sortBug.by:sortBug.descending"
                        ng-click="toggle(bug)"
                        ng-class="{closed : bug.isClosed}"
                     >
-                        {{bug.name | trimText}}
+                        {{bug.name | trimText:30}}
                     </li>
                 </ol>
             </div>
