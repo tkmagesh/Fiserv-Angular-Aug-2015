@@ -12,7 +12,7 @@ function addClient(x,y){
     console.log("[SC] result = ", result);
 }
 
-/* Async */
+/* Async - callbacks*/
 function addAsync(x,y, onResult){
     console.log("[SP] processing ", x , " and " , y);
     setTimeout(function(){
@@ -30,3 +30,54 @@ function addClient(x,y){
         console.log("[SC] result = ", result);
     });
 }
+
+/* Async - events */
+function getAdder(){
+    var _callbacks = [];
+    return {
+        add: function(x,y){
+                console.log("[SP] processing ", x , " and " , y);
+                setTimeout(function(){
+                    var result = x + y;
+                    console.log("[SP] returning result");
+                    _callbacks.forEach(function(callback){
+                        callback(result);
+                    })
+                },4000);
+        },
+        addSubscriber : function(callback){
+            _callbacks.push(callback);
+        }
+    }
+}
+
+//Client
+
+var adder = getAdder();
+
+adder.add(100,200);
+
+adder.addSubscriber(function(result){
+   console.log("[SC] result = ", result);
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
