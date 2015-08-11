@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Routing Demo</title>
+    <script src="angular.js"></script>
+    <script src="angular-route.js"></script>
+    <script>
+        var myApp = angular.module("myApp", ["ngRoute"]);
+        myApp.config(function($routeProvider){
+            $routeProvider
+                .when("/products", {
+                    //template : "<h3>Products</h3>"
+                    templateUrl : "templates/products.html",
+                    controller : "productsController"
+                })
+                .when("/products/:id", {
+                    templateUrl : "templates/productsInfo.html",
+                    controller : "productsInfoController"
+                })
+                .when("/customers", {
+                    //template : "<h3>Customers</h3>"
+                    templateUrl : "templates/customers.html"
+                })
+                .otherwise({
+                    redirectTo : "/products"
+                });
+        });
+        myApp.factory("productsService", function(){
+            return {
+                getAll : function(){
+                    return [
+                        {id : 1, name : "Pen", cost : 20, units : 100, desc : "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestiae saepe facere, minus numquam rerum, dolorem similique! Unde odit, corrupti delectus saepe sapiente aliquid accusantium veniam, temporibus laudantium vero, rem optio.Lorem ipsum dolor sit amet, consectetur adipisicing elit."},
+                        {id : 2, name : "Hen", cost : 200, units : 50, desc : "Saepe fuga corporis, eos pariatur, iure aut odio deleniti reprehenderit beatae placeat, repellat similique et enim. Tempore, ducimus! Hic consequatur doloremque, fuga.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia, nam enim unde dolore aspernatur excepturi labore cumque quasi aliquid expedita dignissimos quia! Nisi, vitae, ratione veniam adipisci doloribus maxime facere."},
+                        {id : 3, name : "Ten", cost : 10, units : 10, desc : "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestiae saepe facere, minus numquam rerum, dolorem similique! Unde odit, corrupti delectus saepe sapiente aliquid accusantium veniam, temporibus laudantium vero, rem optio.Lorem ipsum dolor sit amet, consectetur adipisicing elit."},
+                        {id : 4, name : "Den", cost : 100, units : 20, desc : "Saepe fuga corporis, eos pariatur, iure aut odio deleniti reprehenderit beatae placeat, repellat similique et enim. Tempore, ducimus! Hic consequatur doloremque, fuga.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia, nam enim unde dolore aspernatur excepturi labore cumque quasi aliquid expedita dignissimos quia! Nisi, vitae, ratione veniam adipisci doloribus maxime facere."}
+                    ]
+                }
+            };
+
+        });
+        myApp.controller("productsController", function($scope, productsService){
+            $scope.products = productsService.getAll();
+        });
+        myApp.controller("productsInfoController", function($scope, productsService, $routeParams){
+            var id = parseInt($routeParams.id);
+            $scope.product = productsService.getAll().filter(function(p){
+                return p.id === id;
+            })[0];
+        });
+    </script>
+</head>
+<body ng-app="myApp">
+    <h1>Routing Demo</h1>
+    <a href="#/products">Products</a>
+    <a href="#/customers">Customers</a>
+
+    <div ng-view></div>
+</body>
+</html>

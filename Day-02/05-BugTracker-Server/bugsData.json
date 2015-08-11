@@ -23,6 +23,12 @@
       "name": "User authentication malfunctions",
       "isClosed": false,
       "createdAt": "2015-08-09T07:05:51.925Z"
+    },
+    {
+      "name": "Stack overflow error",
+      "isClosed": false,
+      "createdAt": "2015-08-11T11:04:17.062Z",
+      "id": 8
     }
   ]
 }
