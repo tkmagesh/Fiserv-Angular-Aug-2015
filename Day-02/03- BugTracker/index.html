@@ -51,9 +51,34 @@
         10. Persist the bugs in the server
     */
     </script>
+    <script src="moment.js"></script>
+
     <script src="angular.js"></script>
     <script>
-        var bugTrackerApp = angular.module("bugTrackerApp", []);
+
+        var utils = angular.module("utils", []);
+        utils.value("defaultTrimLength", 20);
+
+        utils.filter("trimText", function(defaultTrimLength){
+            /* factory that returns the actual filter*/
+            return function(data, trimLength){
+                trimLength = trimLength || defaultTrimLength;
+                return data.length < trimLength ? data : data.substr(0,trimLength) + "...";
+
+            };
+
+        });
+
+        utils.value("momentApi", moment);
+
+        utils.filter("toMoment", function(momentApi){
+            return function(data){
+                return momentApi(data).fromNow();
+            }
+        });
+
+
+        var bugTrackerApp = angular.module("bugTrackerApp", ["utils"]);
 
         /*bugTrackerApp.value("Bug", function Bug(defaults){
             this.name = defaults.name || '';
@@ -142,17 +167,7 @@
 
         });
 
-        bugTrackerApp.value("defaultTrimLength", 20);
 
-        bugTrackerApp.filter("trimText", function(defaultTrimLength){
-            /* factory that returns the actual filter*/
-            return function(data, trimLength){
-                trimLength = trimLength || defaultTrimLength;
-                return data.length < trimLength ? data : data.substr(0,trimLength) + "...";
-
-            };
-
-        });
 
     </script>
 </head>
@@ -185,11 +200,6 @@
                 <input type="text" ng-model="newBugName">
                 <input type="button" value="Add Bug" ng-click="addBug()">
                 <input type="button" value="Remove Closed" ng-click="removeClosed()">
-                <br>
-                <style>
-
-
-                </style>
                 <ol>
                     <li
                        ng-repeat="bug in bugs | filter:searchBug | orderBy:sortBug.by:sortBug.descending"
@@ -199,7 +209,7 @@
                            {{bug.name | trimText:30}}
                        </div>
                        <div class="timestamp">
-                           {{bug.createdAt}}
+                           {{bug.createdAt | toMoment}}
                        </div>
                     </li>
                 </ol>
