@@ -55,16 +55,39 @@ function getAdder(){
 
 var adder = getAdder();
 
-adder.add(100,200);
-
 adder.addSubscriber(function(result){
    console.log("[SC] result = ", result);
 });
 
+adder.add(100,200);
 
 
 
+/* Async - Promises */
+function add(x,y){
+    console.log("[SP] processing ", x , " and " , y);
 
+    var promise = new Promise(function(resolve, reject){
+        setTimeout(function(){
+            var result = x + y;
+            console.log("[SP] returning result");
+            resolve(result);
+        },4000);
+    });
+
+    return promise;
+}
+
+//Client
+
+var p = add(100,200);
+p.then(function(result){
+    console.log("result = ", result);
+});
+
+p.catch(function(err){
+
+})
 
 
 
